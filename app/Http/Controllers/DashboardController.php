@@ -35,7 +35,8 @@ final class DashboardController extends Controller
         return view('dashboard.index', [
             'percent' => $percent,
             'tasks' => $tasks,
+            'todo' => $tasks->whereNull('completed_at'),
+            'done' => $tasks->whereNotNull('completed_at'),
         ]);
     }
 }
-

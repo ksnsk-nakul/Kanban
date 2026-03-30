@@ -1,4 +1,9 @@
 <x-layouts.app>
+    @php
+        $todo = $todo ?? $tasks->whereNull('completed_at');
+        $done = $done ?? $tasks->whereNotNull('completed_at');
+    @endphp
+
     <div class="grid gap-6 lg:grid-cols-3">
         <section class="glass rounded-3xl p-6 lg:col-span-2">
             <div class="flex flex-wrap items-start justify-between gap-4">
@@ -33,11 +38,6 @@
             </div>
 
             <div class="mt-6 grid gap-4 md:grid-cols-3">
-                @php
-                    $todo = $tasks->whereNull('completed_at');
-                    $done = $tasks->whereNotNull('completed_at');
-                @endphp
-
                 <div class="rounded-3xl border border-white/10 bg-black/20 p-4">
                     <div class="flex items-center justify-between">
                         <div class="text-sm font-semibold">{{ __('To Do') }}</div>
