@@ -16,5 +16,11 @@ trait HasRoles
     {
         return $this->roles->contains(fn (Role $role) => $role->slug === $slug);
     }
-}
 
+    public function hasPermission(string $key): bool
+    {
+        return $this->roles()
+            ->whereHas('permissions', fn ($q) => $q->where('key', $key))
+            ->exists();
+    }
+}

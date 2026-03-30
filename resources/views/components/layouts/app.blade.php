@@ -11,6 +11,7 @@
 
     $themeMode = auth()->user()?->theme_mode ?? session('theme_mode', 'dark');
     $isDark = $themeMode === 'dark';
+    $user = auth()->user();
 @endphp
 
 <!doctype html>
@@ -43,33 +44,58 @@
                     </a>
 
                     <nav class="mt-6 space-y-2 text-sm">
-                        <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-black/20 px-4 py-3 hover:bg-white/5 transition">
+                        <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-white/40 dark:bg-black/20 px-4 py-3 hover:bg-white/50 dark:hover:bg-white/5 transition">
                             <div class="text-xs text-zinc-400">{{ __('Workspace') }}</div>
                             <div class="font-semibold">{{ __('Dashboard') }}</div>
                         </a>
-                        <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
+                        <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
                             <div class="text-xs text-zinc-400">{{ __('Tasks') }}</div>
                             <div class="font-semibold">{{ __('Board') }}</div>
                         </a>
                         @auth
-                            <a href="{{ route('profile.show') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
+                            <a href="{{ route('profile.show') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
                                 <div class="text-xs text-zinc-400">{{ __('Account') }}</div>
                                 <div class="font-semibold">{{ __('Profile') }}</div>
                             </a>
                             @if (auth()->user()->hasRole('super-admin'))
-                                <a href="{{ route('admin.settings.index') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
+                                <div class="mt-4 text-xs font-semibold text-zinc-400 uppercase tracking-wide">{{ __('Admin') }}</div>
+                                <a href="{{ route('admin.settings.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
                                     <div class="text-xs text-zinc-400">{{ __('Admin') }}</div>
                                     <div class="font-semibold">{{ __('App Settings') }}</div>
                                 </a>
+                                <a href="{{ route('admin.auth-methods.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('Authentication') }}</div>
+                                    <div class="font-semibold">{{ __('Authentication Methods') }}</div>
+                                </a>
+                                <a href="{{ route('admin.roles.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('RBAC') }}</div>
+                                    <div class="font-semibold">{{ __('Roles') }}</div>
+                                </a>
+                                <a href="{{ route('admin.permissions.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('RBAC') }}</div>
+                                    <div class="font-semibold">{{ __('Permissions') }}</div>
+                                </a>
+                                <a href="{{ route('admin.languages.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('Localization') }}</div>
+                                    <div class="font-semibold">{{ __('Languages') }}</div>
+                                </a>
+                                <a href="{{ route('admin.translations.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('Localization') }}</div>
+                                    <div class="font-semibold">{{ __('Translations') }}</div>
+                                </a>
+                                <a href="{{ route('admin.countries.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('International') }}</div>
+                                    <div class="font-semibold">{{ __('Countries') }}</div>
+                                </a>
                             @endif
                         @endauth
-                        <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
+                        <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
                             <div class="text-xs text-zinc-400">{{ __('Settings') }}</div>
                             <div class="font-semibold">{{ __('Theme & Locale') }}</div>
                         </a>
                     </nav>
 
-                    <div class="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <div class="mt-6 rounded-2xl border border-white/10 bg-white/40 dark:bg-black/20 p-4">
                         <div class="text-xs text-zinc-400">{{ __('Quick actions') }}</div>
                         <div class="mt-3 flex gap-2">
                             <form method="post" action="{{ route('preferences.theme') }}">
@@ -108,10 +134,66 @@
                                 <div class="hidden md:block">
                                     <input
                                         type="search"
-                                        placeholder="{{ __('Search tasks, projects...') }}"
-                                        class="w-[320px] rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm outline-none focus:border-white/20"
+                                        placeholder="{{ __('Search') }}"
+                                        class="w-[320px] rounded-2xl bg-white/60 dark:bg-black/30 border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-black/20 dark:focus:border-white/20"
                                     />
                                 </div>
+
+                                <form method="post" action="{{ route('preferences.locale') }}" class="hidden md:block">
+                                    @csrf
+                                    <select name="locale" class="rounded-2xl bg-white/60 dark:bg-black/30 border border-black/10 dark:border-white/10 px-3 py-2 text-sm"
+                                            onchange="this.form.submit()">
+                                        @php($current = app()->getLocale())
+                                        @foreach (\App\Models\Language::query()->where('active', true)->orderByDesc('is_default')->orderBy('name')->get() as $language)
+                                            <option value="{{ $language->code }}" @selected($current === $language->code)>
+                                                {{ strtoupper($language->code) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+
+                                <form method="post" action="{{ route('preferences.theme') }}" class="hidden md:block">
+                                    @csrf
+                                    <input type="hidden" name="theme_mode" :value="dark ? 'light' : 'dark'">
+                                    <button type="submit"
+                                            class="rounded-2xl bg-white/60 dark:bg-black/30 border border-black/10 dark:border-white/10 px-3 py-2 text-sm hover:bg-white/70 dark:hover:bg-white/10 transition"
+                                            x-on:click.prevent="dark = !dark; $el.closest('form').submit()">
+                                        <span x-text="dark ? '{{ __('Light') }}' : '{{ __('Dark') }}'"></span>
+                                    </button>
+                                </form>
+
+                                @auth
+                                    <div class="relative" x-data="{ open: false }">
+                                        <button type="button"
+                                                x-on:click="open = !open"
+                                                class="flex items-center gap-3 rounded-2xl bg-white/60 dark:bg-black/30 border border-black/10 dark:border-white/10 px-3 py-2 hover:bg-white/70 dark:hover:bg-white/10 transition">
+                                            <div class="h-8 w-8 rounded-xl bg-black/10 dark:bg-white/10 grid place-items-center border border-black/10 dark:border-white/10">
+                                                <span class="text-xs font-semibold">{{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}</span>
+                                            </div>
+                                            <div class="hidden sm:block text-left leading-tight">
+                                                <div class="text-sm font-semibold">{{ $user->name }}</div>
+                                                <div class="text-[11px] text-zinc-500">{{ $user->email }}</div>
+                                            </div>
+                                            <svg class="h-4 w-4 text-zinc-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+
+                                        <div x-show="open" x-on:click.outside="open = false" x-transition
+                                             class="absolute right-0 mt-2 w-56 rounded-3xl border border-black/10 dark:border-white/10 bg-white/80 text-zinc-900 dark:bg-zinc-950/90 dark:text-zinc-100 shadow-xl backdrop-blur-lg">
+                                            <div class="p-2">
+                                                <a href="{{ route('profile.show') }}" class="block rounded-2xl px-3 py-2 text-sm hover:bg-white/10 transition">{{ __('Profile') }}</a>
+                                                @if ($user->hasRole('super-admin'))
+                                                    <a href="{{ route('admin.settings.index') }}" class="block rounded-2xl px-3 py-2 text-sm hover:bg-white/10 transition">{{ __('Admin') }} — {{ __('App Settings') }}</a>
+                                                @endif
+                                                <form method="post" action="{{ route('logout') }}" class="mt-1">
+                                                    @csrf
+                                                    <button class="w-full text-left rounded-2xl px-3 py-2 text-sm hover:bg-white/10 transition">{{ __('Logout') }}</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endauth
                             </div>
                         </div>
                     </header>

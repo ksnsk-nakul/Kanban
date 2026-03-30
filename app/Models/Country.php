@@ -13,11 +13,13 @@ class Country extends Model
         'iso3',
         'name',
         'active',
+        'is_default',
         'currency_code',
     ];
 
     protected $casts = [
         'active' => 'bool',
+        'is_default' => 'bool',
     ];
 
     public function settings(): HasOne
@@ -30,4 +32,3 @@ class Country extends Model
         return $this->hasMany(ServiceLocation::class);
     }
 }
-

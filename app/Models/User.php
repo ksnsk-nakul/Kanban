@@ -23,6 +23,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'locale',
+        'theme_mode',
+        'theme_palette',
+        'stage',
     ];
 
     /**

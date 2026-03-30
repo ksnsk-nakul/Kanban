@@ -4,6 +4,7 @@ namespace App\Core\Settings;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 
 final class SettingsManager
 {
@@ -21,7 +22,16 @@ final class SettingsManager
                 ->mapWithKeys(function (Setting $setting): array {
                     $fullKey = $setting->group->key . '.' . $setting->key;
 
-                    return [$fullKey => $this->castValue($setting->type, $setting->value)];
+                    $value = $setting->value;
+                    if ($setting->is_encrypted && is_string($value) && $value !== '') {
+                        try {
+                            $value = Crypt::decryptString($value);
+                        } catch (\Throwable $e) {
+                            // Ignore invalid payloads (e.g. buyers toggling encryption later).
+                        }
+                    }
+
+                    return [$fullKey => $this->castValue($setting->type, $value)];
                 })
                 ->all();
         });
@@ -49,4 +59,3 @@ final class SettingsManager
         };
     }
 }
-

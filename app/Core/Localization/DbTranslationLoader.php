@@ -19,17 +19,17 @@ final class DbTranslationLoader extends FileLoader
     {
         $lines = parent::load($locale, $group, $namespace);
 
-        if ($namespace !== null) {
-            return $lines;
+        // JSON translations: __('Login') resolves via group="*", namespace="*"
+        if ($group === '*' && $namespace === '*') {
+            return array_replace($lines, $this->loadDbJson((string) $locale));
         }
 
-        if ($group !== 'messages') {
-            return $lines;
+        // Optional: allow DB overrides for the default "messages" group as well
+        if ($namespace === null && $group === 'messages') {
+            return array_replace($lines, $this->loadDbMessages((string) $locale));
         }
 
-        $dbLines = $this->loadDbMessages((string) $locale);
-
-        return array_replace($lines, $dbLines);
+        return $lines;
     }
 
     /**
@@ -49,5 +49,22 @@ final class DbTranslationLoader extends FileLoader
                 ->all();
         });
     }
-}
 
+    /**
+     * @return array<string, string>
+     */
+    private function loadDbJson(string $locale): array
+    {
+        return Cache::rememberForever("devlife.translations.json.{$locale}", function () use ($locale): array {
+            $languageId = Language::query()->where('code', $locale)->value('id');
+            if (!$languageId) {
+                return [];
+            }
+
+            return Translation::query()
+                ->where('language_id', $languageId)
+                ->pluck('value', 'key')
+                ->all();
+        });
+    }
+}

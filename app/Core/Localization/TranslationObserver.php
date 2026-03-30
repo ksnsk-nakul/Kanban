@@ -24,6 +24,6 @@ final class TranslationObserver
         }
 
         Cache::forget("devlife.translations.messages.{$locale}");
+        Cache::forget("devlife.translations.json.{$locale}");
     }
 }
-
