@@ -40,7 +40,9 @@ final class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        $user = $request->user();
+
+        return redirect()->intended($this->landingUrl($user));
     }
 
     public function showRegister(): View
@@ -70,7 +72,7 @@ final class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        return redirect()->to($this->landingUrl($user));
     }
 
     public function logout(Request $request): RedirectResponse
@@ -82,5 +84,17 @@ final class AuthController extends Controller
 
         return redirect()->route('login');
     }
-}
 
+    private function landingUrl(?User $user): string
+    {
+        if (!$user) {
+            return route('dashboard');
+        }
+
+        if ($user->hasRole('super-admin') || $user->hasRole('admin')) {
+            return route('admin.settings.index');
+        }
+
+        return route('dashboard');
+    }
+}

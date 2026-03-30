@@ -16,9 +16,16 @@ use App\Http\Controllers\Admin\AuthMethodController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : view('welcome');
+    if (!auth()->check()) {
+        return view('welcome');
+    }
+
+    $user = auth()->user();
+    if ($user?->hasRole('super-admin') || $user?->hasRole('admin')) {
+        return redirect()->route('admin.settings.index');
+    }
+
+    return redirect()->route('dashboard');
 })->name('home');
 
 Route::middleware('guest')->group(function () {
