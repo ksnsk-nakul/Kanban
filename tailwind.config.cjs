@@ -1,10 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./resources/views/**/*.blade.php",
     "./resources/js/**/*.js",
     "./Addons/**/Resources/views/**/*.blade.php",
   ],
+  darkMode: "class",
   theme: {
     extend: {},
   },
