@@ -1,8 +1,15 @@
 <x-layouts.app>
     @php
-        $todo = $todo ?? $tasks->whereNull('completed_at');
-        $done = $done ?? $tasks->whereNotNull('completed_at');
+        $todo = $todo ?? $tasks->where('status', \App\Models\AssistantTask::STATUS_TODO);
+        $inProgress = $inProgress ?? $tasks->where('status', \App\Models\AssistantTask::STATUS_IN_PROGRESS);
+        $done = $done ?? $tasks->where('status', \App\Models\AssistantTask::STATUS_DONE);
     @endphp
+
+    <script>
+        window.__devlife = window.__devlife || {};
+        window.__devlife.reorderUrl = @json(route('assistant.tasks.reorder'));
+        window.__devlife.csrf = @json(csrf_token());
+    </script>
 
     <div class="grid gap-6 lg:grid-cols-3">
         <section class="glass rounded-3xl p-6 lg:col-span-2">
@@ -37,68 +44,95 @@
                 </div>
             </div>
 
-            <div class="mt-6 grid gap-4 md:grid-cols-3">
-                <div class="rounded-3xl border border-white/10 bg-black/20 p-4">
+            <div class="mt-6 grid gap-4 md:grid-cols-3" x-data="taskBoard({
+                todo: @js($todo->values()->map(fn($t) => ['id' => $t->id, 'title' => $t->title, 'category' => $t->category])),
+                in_progress: @js($inProgress->values()->map(fn($t) => ['id' => $t->id, 'title' => $t->title, 'category' => $t->category])),
+                done: @js($done->values()->map(fn($t) => ['id' => $t->id, 'title' => $t->title, 'category' => $t->category])),
+            })">
+                <div class="rounded-3xl border border-white/10 bg-black/20 p-4" data-column="todo"
+                     x-on:dragover.prevent
+                     x-on:drop.prevent="drop('todo')">
                     <div class="flex items-center justify-between">
                         <div class="text-sm font-semibold">{{ __('To Do') }}</div>
-                        <div class="text-xs text-zinc-500">{{ $todo->count() }}</div>
+                        <div class="text-xs text-zinc-500" x-text="columns.todo.length"></div>
                     </div>
                     <div class="mt-3 space-y-2">
-                        @forelse ($todo as $task)
-                            <div class="rounded-2xl border border-white/10 bg-black/30 p-3">
-                                <div class="text-sm">{{ $task->title }}</div>
-                                <div class="mt-1 text-xs text-zinc-500">{{ $task->category }}</div>
+                        <template x-for="t in columns.todo" :key="t.id">
+                            <div class="rounded-2xl border border-white/10 bg-black/30 p-3 cursor-grab active:cursor-grabbing"
+                                 draggable="true"
+                                 x-on:dragstart="dragStart(t.id, 'todo')">
+                                <div class="text-sm" x-text="t.title"></div>
+                                <div class="mt-1 text-xs text-zinc-500" x-text="t.category"></div>
                                 <div class="mt-3 flex items-center justify-between">
-                                    <span class="text-[11px] text-zinc-500">{{ __('Today') }}</span>
-                                    <form method="post" action="{{ route('assistant.tasks.toggle', $task) }}">
-                                        @csrf
-                                        <button class="rounded-xl px-3 py-1.5 text-xs border border-white/10 bg-white/5 hover:bg-white/10 transition">{{ __('Done') }}</button>
-                                    </form>
+                                    <span class="text-[11px] text-zinc-500">{{ __('Drag me') }}</span>
+                                    <button type="button" class="rounded-xl px-3 py-1.5 text-xs border border-white/10 bg-white/5 hover:bg-white/10 transition"
+                                            x-on:click="toggleDone(t.id)">
+                                        {{ __('Done') }}
+                                    </button>
                                 </div>
                             </div>
-                        @empty
-                            <div class="rounded-2xl border border-dashed border-white/10 bg-black/20 p-4 text-sm text-zinc-400">
-                                {{ __('No tasks yet. Add one below.') }}
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="rounded-3xl border border-white/10 bg-black/20 p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm font-semibold">{{ __('In Progress') }}</div>
-                        <div class="text-xs text-zinc-500">0</div>
-                    </div>
-                    <div class="mt-3 space-y-2">
-                        <div class="rounded-2xl border border-dashed border-white/10 bg-black/20 p-4 text-sm text-zinc-400">
-                            {{ __('Template column for addons. Future status support can move tasks here.') }}
+                        </template>
+                        <div x-show="columns.todo.length === 0" class="rounded-2xl border border-dashed border-white/10 bg-black/20 p-4 text-sm text-zinc-400">
+                            {{ __('No tasks yet. Add one below.') }}
                         </div>
                     </div>
                 </div>
 
-                <div class="rounded-3xl border border-white/10 bg-black/20 p-4">
+                <div class="rounded-3xl border border-white/10 bg-black/20 p-4" data-column="in_progress"
+                     x-on:dragover.prevent
+                     x-on:drop.prevent="drop('in_progress')">
                     <div class="flex items-center justify-between">
-                        <div class="text-sm font-semibold">{{ __('Done') }}</div>
-                        <div class="text-xs text-zinc-500">{{ $done->count() }}</div>
+                        <div class="text-sm font-semibold">{{ __('In Progress') }}</div>
+                        <div class="text-xs text-zinc-500" x-text="columns.in_progress.length"></div>
                     </div>
                     <div class="mt-3 space-y-2">
-                        @forelse ($done as $task)
-                            <div class="rounded-2xl border border-white/10 bg-black/20 p-3">
-                                <div class="text-sm line-through text-zinc-500">{{ $task->title }}</div>
-                                <div class="mt-1 text-xs text-zinc-500">{{ $task->category }}</div>
+                        <template x-for="t in columns.in_progress" :key="t.id">
+                            <div class="rounded-2xl border border-white/10 bg-black/30 p-3 cursor-grab active:cursor-grabbing"
+                                 draggable="true"
+                                 x-on:dragstart="dragStart(t.id, 'in_progress')">
+                                <div class="text-sm" x-text="t.title"></div>
+                                <div class="mt-1 text-xs text-zinc-500" x-text="t.category"></div>
                                 <div class="mt-3 flex items-center justify-between">
-                                    <span class="text-[11px] text-zinc-500">{{ __('Completed') }}</span>
-                                    <form method="post" action="{{ route('assistant.tasks.toggle', $task) }}">
-                                        @csrf
-                                        <button class="rounded-xl px-3 py-1.5 text-xs border border-white/10 bg-white/5 hover:bg-white/10 transition">{{ __('Undo') }}</button>
-                                    </form>
+                                    <span class="text-[11px] text-zinc-500">{{ __('Drag me') }}</span>
+                                    <button type="button" class="rounded-xl px-3 py-1.5 text-xs border border-white/10 bg-white/5 hover:bg-white/10 transition"
+                                            x-on:click="toggleDone(t.id)">
+                                        {{ __('Done') }}
+                                    </button>
                                 </div>
                             </div>
-                        @empty
-                            <div class="rounded-2xl border border-dashed border-white/10 bg-black/20 p-4 text-sm text-zinc-400">
-                                {{ __('Nothing completed yet.') }}
+                        </template>
+                        <div x-show="columns.in_progress.length === 0" class="rounded-2xl border border-dashed border-white/10 bg-black/20 p-4 text-sm text-zinc-400">
+                            {{ __('Drag tasks here to focus.') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-3xl border border-white/10 bg-black/20 p-4" data-column="done"
+                     x-on:dragover.prevent
+                     x-on:drop.prevent="drop('done')">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm font-semibold">{{ __('Done') }}</div>
+                        <div class="text-xs text-zinc-500" x-text="columns.done.length"></div>
+                    </div>
+                    <div class="mt-3 space-y-2">
+                        <template x-for="t in columns.done" :key="t.id">
+                            <div class="rounded-2xl border border-white/10 bg-black/20 p-3 cursor-grab active:cursor-grabbing"
+                                 draggable="true"
+                                 x-on:dragstart="dragStart(t.id, 'done')">
+                                <div class="text-sm line-through text-zinc-500" x-text="t.title"></div>
+                                <div class="mt-1 text-xs text-zinc-500" x-text="t.category"></div>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-[11px] text-zinc-500">{{ __('Drag me') }}</span>
+                                    <button type="button" class="rounded-xl px-3 py-1.5 text-xs border border-white/10 bg-white/5 hover:bg-white/10 transition"
+                                            x-on:click="toggleDone(t.id)">
+                                        {{ __('Undo') }}
+                                    </button>
+                                </div>
                             </div>
-                        @endforelse
+                        </template>
+                        <div x-show="columns.done.length === 0" class="rounded-2xl border border-dashed border-white/10 bg-black/20 p-4 text-sm text-zinc-400">
+                            {{ __('Nothing completed yet.') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,6 +152,12 @@
                         <option>{{ __('Personal') }}</option>
                         <option>{{ __('Product Development') }}</option>
                     </select>
+                    <select name="priority" class="rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm">
+                        <option value="0">{{ __('Priority: Low') }}</option>
+                        <option value="1">{{ __('Priority: Normal') }}</option>
+                        <option value="2">{{ __('Priority: High') }}</option>
+                        <option value="3">{{ __('Priority: Urgent') }}</option>
+                    </select>
                     <button class="md:col-span-3 rounded-2xl bg-white/10 border border-white/10 px-4 py-2 text-sm hover:bg-white/15 transition">
                         {{ __('Add task') }}
                     </button>
@@ -126,6 +166,35 @@
         </section>
 
         <aside class="space-y-6">
+            <div class="glass rounded-3xl p-6">
+                <h2 class="text-sm font-semibold">{{ __('Priority') }}</h2>
+                <p class="text-xs text-zinc-400">{{ __('Filter tasks by priority.') }}</p>
+
+                <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+                    @php($p = $priority ?? '')
+                    <a href="{{ route('dashboard') }}"
+                       class="rounded-2xl border border-white/10 bg-black/10 px-4 py-2 text-center hover:bg-white/5 transition {{ $p === '' ? 'bg-white/10' : '' }}">
+                        {{ __('All') }}
+                    </a>
+                    <a href="{{ route('dashboard', ['priority' => 3]) }}"
+                       class="rounded-2xl border border-white/10 bg-black/10 px-4 py-2 text-center hover:bg-white/5 transition {{ $p === 3 ? 'bg-white/10' : '' }}">
+                        {{ __('Urgent') }}
+                    </a>
+                    <a href="{{ route('dashboard', ['priority' => 2]) }}"
+                       class="rounded-2xl border border-white/10 bg-black/10 px-4 py-2 text-center hover:bg-white/5 transition {{ $p === 2 ? 'bg-white/10' : '' }}">
+                        {{ __('High') }}
+                    </a>
+                    <a href="{{ route('dashboard', ['priority' => 1]) }}"
+                       class="rounded-2xl border border-white/10 bg-black/10 px-4 py-2 text-center hover:bg-white/5 transition {{ $p === 1 ? 'bg-white/10' : '' }}">
+                        {{ __('Normal') }}
+                    </a>
+                    <a href="{{ route('dashboard', ['priority' => 0]) }}"
+                       class="rounded-2xl border border-white/10 bg-black/10 px-4 py-2 text-center hover:bg-white/5 transition col-span-2 {{ $p === 0 ? 'bg-white/10' : '' }}">
+                        {{ __('Low') }}
+                    </a>
+                </div>
+            </div>
+
             <div class="glass rounded-3xl p-6">
                 <h2 class="text-sm font-semibold">{{ __('Preferences') }}</h2>
                 <p class="text-xs text-zinc-400">{{ __('Language and UX defaults.') }}</p>

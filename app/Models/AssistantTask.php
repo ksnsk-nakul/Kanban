@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AssistantTask extends Model
 {
+    public const STATUS_TODO = 'todo';
+    public const STATUS_IN_PROGRESS = 'in_progress';
+    public const STATUS_DONE = 'done';
+
     protected $fillable = [
         'user_id',
         'category',
@@ -16,6 +20,7 @@ class AssistantTask extends Model
         'due_date',
         'reminder_at',
         'completed_at',
+        'status',
         'priority',
         'sort_order',
     ];

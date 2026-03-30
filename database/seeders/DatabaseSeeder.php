@@ -10,6 +10,7 @@ use Database\Seeders\DevLife\DemoUserSeeder;
 use Database\Seeders\DevLife\LanguagesSeeder;
 use Database\Seeders\DevLife\RolesSeeder;
 use Database\Seeders\DevLife\SettingsSeeder;
+use Database\Seeders\DevLife\TranslationsSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
             CountriesSeeder::class,
             CurrenciesSeeder::class,
             SettingsSeeder::class,
+            TranslationsSeeder::class,
             DemoUserSeeder::class,
         ]);
     }

@@ -14,6 +14,8 @@ final class DashboardController extends Controller
         $user = $request->user();
 
         $today = CarbonImmutable::today();
+        $priority = $request->query('priority');
+        $priority = is_numeric($priority) ? (int) $priority : null;
 
         $tasksQuery = AssistantTask::query()
             ->forUser($user)
@@ -26,17 +28,24 @@ final class DashboardController extends Controller
 
         $tasks = AssistantTask::query()
             ->forUser($user)
-            ->orderByRaw('completed_at is not null')
+            ->when($priority !== null, fn ($q) => $q->where('priority', $priority))
+            ->orderBy('priority', 'desc')
             ->orderBy('sort_order')
             ->latest('id')
-            ->limit(12)
+            ->limit(60)
             ->get();
+
+        $todo = $tasks->where('status', AssistantTask::STATUS_TODO);
+        $inProgress = $tasks->where('status', AssistantTask::STATUS_IN_PROGRESS);
+        $done = $tasks->where('status', AssistantTask::STATUS_DONE);
 
         return view('dashboard.index', [
             'percent' => $percent,
             'tasks' => $tasks,
-            'todo' => $tasks->whereNull('completed_at'),
-            'done' => $tasks->whereNotNull('completed_at'),
+            'todo' => $todo,
+            'inProgress' => $inProgress,
+            'done' => $done,
+            'priority' => $priority,
         ]);
     }
 }

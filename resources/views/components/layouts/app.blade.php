@@ -51,6 +51,18 @@
                             <div class="text-xs text-zinc-400">{{ __('Tasks') }}</div>
                             <div class="font-semibold">{{ __('Board') }}</div>
                         </a>
+                        @auth
+                            <a href="{{ route('profile.show') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
+                                <div class="text-xs text-zinc-400">{{ __('Account') }}</div>
+                                <div class="font-semibold">{{ __('Profile') }}</div>
+                            </a>
+                            @if (auth()->user()->hasRole('super-admin'))
+                                <a href="{{ route('admin.settings.index') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
+                                    <div class="text-xs text-zinc-400">{{ __('Admin') }}</div>
+                                    <div class="font-semibold">{{ __('App Settings') }}</div>
+                                </a>
+                            @endif
+                        @endauth
                         <a href="{{ route('dashboard') }}" class="block rounded-2xl border border-white/10 bg-black/10 px-4 py-3 hover:bg-white/5 transition">
                             <div class="text-xs text-zinc-400">{{ __('Settings') }}</div>
                             <div class="font-semibold">{{ __('Theme & Locale') }}</div>
