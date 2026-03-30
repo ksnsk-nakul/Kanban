@@ -9,7 +9,7 @@
                 <a href="{{ route('admin.roles.index') }}" class="rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm hover:bg-white/10 transition">
                     {{ __('Back') }}
                 </a>
-                @if (! $role->is_required && ! $role->is_system)
+                @if (! $role->is_required && ! $role->is_system && empty($selfRole))
                     <form method="post" action="{{ route('admin.roles.destroy', $role) }}"
                           onsubmit="return confirm('Delete this role?');">
                         @csrf
@@ -21,6 +21,12 @@
                 @endif
             </div>
         </div>
+
+        @if (!empty($selfRole))
+            <div class="mt-4 rounded-3xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-200">
+                {{ __('This role is assigned to your account. For safety, you cannot modify its permissions or delete it while logged in.') }}
+            </div>
+        @endif
 
         <form method="post" action="{{ route('admin.roles.update', $role) }}" class="mt-6 space-y-6">
             @csrf
@@ -44,6 +50,20 @@
                             @if ($role->is_required)
                                 <div class="mt-1 text-[11px] text-zinc-500">{{ __('Required roles cannot change key.') }}</div>
                             @endif
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-zinc-400">{{ __('Level') }}</label>
+                            <input
+                                name="level"
+                                type="number"
+                                min="1"
+                                max="{{ max(1, ($currentLevel ?? 1) - 1) }}"
+                                value="{{ old('level', $role->level) }}"
+                                @disabled($role->is_system || !empty($selfRole))
+                                class="mt-1 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm outline-none focus:border-white/20 disabled:opacity-60"
+                            />
+                            <div class="mt-1 text-[11px] text-zinc-500">{{ __('Only roles below your level can be managed.') }}</div>
                         </div>
 
                         <div>
@@ -74,6 +94,7 @@
                                                 name="permissions[]"
                                                 value="{{ $permission->id }}"
                                                 @checked(in_array($permission->id, old('permissions', $selected), true))
+                                                @disabled(!empty($selfRole))
                                                 class="mt-1 h-4 w-4 rounded border-white/20 bg-black/30"
                                             />
                                             <div>
@@ -91,7 +112,7 @@
                     </div>
 
                     <div class="mt-6 flex items-center gap-2">
-                        <button class="rounded-2xl bg-white/10 border border-white/10 px-4 py-2 text-sm hover:bg-white/15 transition">
+                        <button @disabled(!empty($selfRole)) class="rounded-2xl bg-white/10 border border-white/10 px-4 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60">
                             {{ __('Save changes') }}
                         </button>
                         <a href="{{ route('admin.permissions.index') }}" class="rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm hover:bg-white/10 transition">

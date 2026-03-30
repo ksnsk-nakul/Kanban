@@ -13,6 +13,7 @@ class Role extends Model
     protected $fillable = [
         'name',
         'slug',
+        'level',
         'description',
         'is_required',
         'is_system',
@@ -21,6 +22,7 @@ class Role extends Model
     protected $casts = [
         'is_required' => 'bool',
         'is_system' => 'bool',
+        'level' => 'int',
     ];
 
     public function permissions(): BelongsToMany
@@ -33,4 +35,3 @@ class Role extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 }
-

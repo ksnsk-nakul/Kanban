@@ -19,6 +19,7 @@
                             <tr>
                                 <th class="px-4 py-3 text-left">{{ __('Name') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Key') }}</th>
+                                <th class="px-4 py-3 text-left">{{ __('Level') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Permissions') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Users') }}</th>
                                 <th class="px-4 py-3"></th>
@@ -38,6 +39,7 @@
                                         </div>
                                     </td>
                                     <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->slug }}</td>
+                                    <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->level }}</td>
                                     <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->permissions_count }}</td>
                                     <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->users_count }}</td>
                                     <td class="px-4 py-3 text-right">
@@ -68,6 +70,13 @@
                         <input name="slug" value="{{ old('slug') }}" placeholder="e.g. project-manager"
                                class="mt-1 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm outline-none focus:border-white/20" />
                         <div class="mt-1 text-[11px] text-zinc-500">{{ __('Leave empty to auto-generate from name.') }}</div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-zinc-400">{{ __('Level') }}</label>
+                        <input name="level" type="number" min="1" value="{{ old('level') }}" placeholder="e.g. 40"
+                               class="mt-1 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm outline-none focus:border-white/20" />
+                        <div class="mt-1 text-[11px] text-zinc-500">{{ __('Higher level = more authority. Keep below your own role level.') }}</div>
                     </div>
 
                     <div>
