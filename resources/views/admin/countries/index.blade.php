@@ -10,7 +10,7 @@
             </a>
         </div>
 
-        <div class="mt-6 rounded-3xl border border-white/10 bg-black/10 p-5">
+        <div class="mt-6 rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
             <form method="get" action="{{ route('admin.countries.index') }}" class="flex flex-wrap items-center gap-2">
                 <input name="q" value="{{ $q }}" placeholder="{{ __('Search') }}"
                        class="w-full md:w-[420px] rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm outline-none focus:border-white/20" />
@@ -21,7 +21,7 @@
 
             <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
                 <table class="w-full text-sm">
-                    <thead class="bg-black/20 text-xs text-zinc-400">
+                    <thead class="bg-white/60 dark:bg-black/20 text-xs text-zinc-500 dark:text-zinc-400">
                         <tr>
                             <th class="px-4 py-3 text-left">{{ __('Name') }}</th>
                             <th class="px-4 py-3 text-left">ISO</th>
@@ -33,11 +33,11 @@
                     </thead>
                     <tbody class="divide-y divide-white/10">
                         @foreach ($countries as $country)
-                            <tr class="bg-black/10">
+                            <tr class="bg-white/40 dark:bg-black/10">
                                 <td class="px-4 py-3">
                                     <div class="font-medium">{{ $country->name }}</div>
                                 </td>
-                                <td class="px-4 py-3 text-zinc-300">{{ strtoupper($country->iso2) }}</td>
+                                <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ strtoupper($country->iso2) }}</td>
                                 <td class="px-4 py-3">
                                     <select form="country-update-{{ $country->id }}" name="currency_code"
                                             class="rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-sm">
@@ -92,4 +92,3 @@
         </div>
     </div>
 </x-layouts.app>
-

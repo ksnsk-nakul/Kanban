@@ -10,10 +10,10 @@
             </a>
         </div>
 
-        <div class="mt-6 rounded-3xl border border-white/10 bg-black/10 p-5">
+        <div class="mt-6 rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
             <div class="overflow-hidden rounded-2xl border border-white/10">
                 <table class="w-full text-sm">
-                    <thead class="bg-black/20 text-xs text-zinc-400">
+                    <thead class="bg-white/60 dark:bg-black/20 text-xs text-zinc-500 dark:text-zinc-400">
                         <tr>
                             <th class="px-4 py-3 text-left">{{ __('Key') }}</th>
                             <th class="px-4 py-3 text-left">{{ __('Active') }}</th>
@@ -21,8 +21,8 @@
                     </thead>
                     <tbody class="divide-y divide-white/10">
                         @foreach ($methods as $method)
-                            <tr class="bg-black/10">
-                                <td class="px-4 py-3 text-zinc-300">{{ $method->key }}</td>
+                            <tr class="bg-white/40 dark:bg-black/10">
+                                <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $method->key }}</td>
                                 <td class="px-4 py-3">
                                     <form method="post" action="{{ route('admin.auth-methods.toggle', $method) }}">
                                         @csrf
@@ -39,4 +39,3 @@
         </div>
     </div>
 </x-layouts.app>
-

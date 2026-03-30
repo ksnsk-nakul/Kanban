@@ -27,7 +27,7 @@
             @method('put')
 
             <div class="grid gap-4 md:grid-cols-3">
-                <div class="rounded-3xl border border-white/10 bg-black/10 p-5 md:col-span-1">
+                <div class="rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5 md:col-span-1">
                     <div class="text-sm font-semibold">{{ __('Details') }}</div>
 
                     <div class="mt-4 space-y-3">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-3xl border border-white/10 bg-black/10 p-5 md:col-span-2">
+                <div class="rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5 md:col-span-2">
                     <div class="flex items-center justify-between">
                         <div class="text-sm font-semibold">{{ __('Permissions') }}</div>
                         <div class="text-xs text-zinc-500">{{ $role->permissions->count() }} {{ __('selected') }}</div>
@@ -68,7 +68,7 @@
                                 <div class="text-xs font-semibold text-zinc-400 uppercase tracking-wide">{{ __($group) }}</div>
                                 <div class="mt-2 grid gap-2 md:grid-cols-2">
                                     @foreach ($rows as $permission)
-                                        <label class="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 hover:bg-white/5 transition">
+                                        <label class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/50 dark:bg-black/20 p-3 hover:bg-white/60 dark:hover:bg-white/5 transition">
                                             <input
                                                 type="checkbox"
                                                 name="permissions[]"
@@ -103,4 +103,3 @@
         </form>
     </div>
 </x-layouts.app>
-

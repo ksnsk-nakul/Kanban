@@ -26,7 +26,7 @@
 @endphp
 
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $dir }}" x-data="{ dark: @json($isDark) }" :class="{ 'dark': dark }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $dir }}" x-data="{ dark: @json($isDark), navOpen: false }" :class="{ 'dark': dark }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,13 +41,27 @@
             <div class="pointer-events-none absolute bottom-0 right-8 h-[460px] w-[460px] rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 blur-3xl"></div>
         </div>
 
-        <div class="mx-auto max-w-7xl px-4 py-6">
-            <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
-                <aside class="glass rounded-3xl p-5 lg:sticky lg:top-6 lg:h-[calc(100vh-3rem)]">
-                    <a href="{{ route('home') }}" class="flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-2xl bg-white/10 grid place-items-center border border-white/10">
-                            <span class="text-sm font-semibold">DL</span>
+	        <div class="mx-auto max-w-7xl px-4 py-6">
+	            <div class="relative grid gap-6 lg:grid-cols-[260px_1fr]">
+                    <div x-show="navOpen" x-transition.opacity class="fixed inset-0 z-40 bg-black/40 lg:hidden" x-on:click="navOpen = false"></div>
+
+	                <aside
+                        class="glass rounded-3xl p-5 z-50 lg:z-auto lg:sticky lg:top-6 lg:h-[calc(100vh-3rem)]"
+                        :class="navOpen ? 'fixed left-4 right-4 top-4 bottom-4 overflow-auto lg:static lg:overflow-visible' : 'hidden lg:block'"
+                    >
+                        <div class="flex items-center justify-between lg:hidden">
+                            <div class="text-sm font-semibold">{{ config('devlife.app_name', 'DevLife OS') }}</div>
+                            <button type="button"
+                                    class="rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-xs hover:bg-white/10 transition"
+                                    x-on:click="navOpen = false">
+                                {{ __('Close') }}
+                            </button>
                         </div>
+
+	                    <a href="{{ route('home') }}" class="flex items-center gap-3">
+	                        <div class="h-10 w-10 rounded-2xl bg-white/10 grid place-items-center border border-white/10">
+	                            <span class="text-sm font-semibold">DL</span>
+	                        </div>
                         <div class="leading-tight">
                             <div class="text-sm font-semibold">{{ config('devlife.app_name', 'DevLife OS') }}</div>
                             <div class="text-xs text-zinc-400">{{ __('Task management core') }}</div>
@@ -68,7 +82,7 @@
                                 <div class="text-xs text-zinc-400">{{ __('Account') }}</div>
                                 <div class="font-semibold">{{ __('Profile') }}</div>
                             </a>
-                            @if (auth()->user()->hasRole('super-admin'))
+                            @if (auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin'))
                                 <div class="mt-4 text-xs font-semibold text-zinc-400 uppercase tracking-wide">{{ __('Admin') }}</div>
                                 <a href="{{ route('admin.settings.index') }}" class="block rounded-2xl border border-white/10 bg-white/30 dark:bg-black/10 px-4 py-3 hover:bg-white/40 dark:hover:bg-white/5 transition">
                                     <div class="text-xs text-zinc-400">{{ __('Admin') }}</div>
@@ -133,13 +147,18 @@
                     </div>
                 </aside>
 
-                <div>
-                    <header class="glass rounded-3xl p-4 md:p-5">
-                        <div class="flex flex-wrap items-center justify-between gap-3">
-                            <div>
-                                <div class="text-xs text-zinc-400">{{ __('DevLife OS') }}</div>
-                                <div class="text-sm font-semibold">{{ __('Task Manager') }}</div>
-                            </div>
+	                <div>
+	                    <header class="glass rounded-3xl p-4 md:p-5">
+	                        <div class="flex flex-wrap items-center justify-between gap-3">
+	                            <div>
+                                    <button type="button"
+                                            class="mb-2 inline-flex items-center gap-2 rounded-2xl bg-white/60 dark:bg-black/30 border border-black/10 dark:border-white/10 px-3 py-2 text-sm hover:bg-white/70 dark:hover:bg-white/10 transition lg:hidden"
+                                            x-on:click="navOpen = true">
+                                        <span class="text-xs">{{ __('Menu') }}</span>
+                                    </button>
+	                                <div class="text-xs text-zinc-400">{{ __('DevLife OS') }}</div>
+	                                <div class="text-sm font-semibold">{{ __('Task Manager') }}</div>
+	                            </div>
 
                             <div class="flex items-center gap-2">
                                 <div class="hidden md:block">
@@ -194,7 +213,7 @@
                                              class="absolute right-0 mt-2 w-56 rounded-3xl border border-black/10 dark:border-white/10 bg-white/80 text-zinc-900 dark:bg-zinc-950/90 dark:text-zinc-100 shadow-xl backdrop-blur-lg">
                                             <div class="p-2">
                                                 <a href="{{ route('profile.show') }}" class="block rounded-2xl px-3 py-2 text-sm hover:bg-white/10 transition">{{ __('Profile') }}</a>
-                                                @if ($user->hasRole('super-admin'))
+                                                @if ($user->hasRole('super-admin') || $user->hasRole('admin'))
                                                     <a href="{{ route('admin.settings.index') }}" class="block rounded-2xl px-3 py-2 text-sm hover:bg-white/10 transition">{{ __('Admin') }} — {{ __('App Settings') }}</a>
                                                 @endif
                                                 <form method="post" action="{{ route('logout') }}" class="mt-1">

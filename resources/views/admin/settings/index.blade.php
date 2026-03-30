@@ -11,14 +11,14 @@
             @csrf
 
             @foreach ($groups as $group)
-                <div class="rounded-3xl border border-white/10 bg-black/10 p-5">
+                <div class="rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
                     <div class="text-sm font-semibold">{{ __($group->name) }}</div>
                     @if ($group->description)
                         <div class="mt-1 text-xs text-zinc-500">{{ __($group->description) }}</div>
                     @endif
 
                     <div class="mt-4 grid gap-3 md:grid-cols-2">
-	                        @foreach ($group->settings as $setting)
+                        @foreach ($group->settings as $setting)
 	                            @php
 	                                $fullKey = $group->key . '.' . $setting->key;
 	                                $def = $definitions[$fullKey] ?? [];
@@ -31,7 +31,7 @@
                                     $path = null;
                                     $url = null;
 	                            @endphp
-                            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
+                            <div class="rounded-2xl border border-white/10 bg-white/40 dark:bg-black/10 p-4">
                                 <div class="text-xs text-zinc-500">{{ __($label) }}</div>
                                 <div class="mt-1 text-[11px] text-zinc-500">{{ $fullKey }}</div>
 

@@ -11,12 +11,12 @@
         </div>
 
         <div class="mt-6 grid gap-6 lg:grid-cols-3">
-            <div class="lg:col-span-2 rounded-3xl border border-white/10 bg-black/10 p-5">
+            <div class="lg:col-span-2 rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
                 <div class="text-sm font-semibold">{{ __('All languages') }}</div>
 
                 <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
                     <table class="w-full text-sm">
-                        <thead class="bg-black/20 text-xs text-zinc-400">
+                        <thead class="bg-white/60 dark:bg-black/20 text-xs text-zinc-500 dark:text-zinc-400">
                             <tr>
                                 <th class="px-4 py-3 text-left">{{ __('Name') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Code') }}</th>
@@ -28,7 +28,7 @@
                         </thead>
                         <tbody class="divide-y divide-white/10">
                             @foreach ($languages as $language)
-                                <tr class="bg-black/10">
+                                <tr class="bg-white/40 dark:bg-black/10">
                                     <td class="px-4 py-3">
                                         <input
                                             form="lang-update-{{ $language->id }}"
@@ -37,7 +37,7 @@
                                             class="w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-sm outline-none focus:border-white/20"
                                         />
                                     </td>
-                                    <td class="px-4 py-3 text-zinc-300">{{ strtoupper($language->code) }}</td>
+                                    <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ strtoupper($language->code) }}</td>
                                     <td class="px-4 py-3">
                                         <select form="lang-update-{{ $language->id }}" name="direction" class="rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-sm">
                                             <option value="ltr" @selected($language->direction === 'ltr')>LTR</option>

@@ -11,7 +11,7 @@
         </div>
 
         <div class="mt-6 grid gap-6 lg:grid-cols-3">
-            <div class="lg:col-span-2 rounded-3xl border border-white/10 bg-black/10 p-5">
+            <div class="lg:col-span-2 rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
                 <form method="get" action="{{ route('admin.translations.index') }}" class="flex flex-wrap items-center gap-2">
                     <select name="lang" class="rounded-2xl bg-black/30 border border-white/10 px-4 py-2 text-sm">
                         @foreach ($languages as $lang)
@@ -29,7 +29,7 @@
 
                 <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
                     <table class="w-full text-sm">
-                        <thead class="bg-black/20 text-xs text-zinc-400">
+                        <thead class="bg-white/60 dark:bg-black/20 text-xs text-zinc-500 dark:text-zinc-400">
                             <tr>
                                 <th class="px-4 py-3 text-left">{{ __('Key') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Value') }}</th>
@@ -38,7 +38,7 @@
                         </thead>
                         <tbody class="divide-y divide-white/10">
                             @foreach ($translations as $translation)
-                                <tr class="bg-black/10 align-top">
+                                <tr class="bg-white/40 dark:bg-black/10 align-top">
                                     <td class="px-4 py-3">
                                         <div class="text-xs text-zinc-500">{{ $translation->key }}</div>
                                     </td>
@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="rounded-3xl border border-white/10 bg-black/10 p-5">
+            <div class="rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
                 <div class="text-sm font-semibold">{{ __('Add') }} {{ __('Translation') }}</div>
                 <form method="post" action="{{ route('admin.translations.store') }}" class="mt-4 space-y-3">
                     @csrf
@@ -101,4 +101,3 @@
         </div>
     </div>
 </x-layouts.app>
-

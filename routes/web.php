@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/preferences/stage', [PreferenceController::class, 'setStage'])->name('preferences.stage');
 });
 
-Route::middleware(['auth', 'role:super-admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 

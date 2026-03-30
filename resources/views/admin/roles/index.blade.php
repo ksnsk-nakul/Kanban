@@ -11,11 +11,11 @@
         </div>
 
         <div class="mt-6 grid gap-6 lg:grid-cols-3">
-            <div class="lg:col-span-2 rounded-3xl border border-white/10 bg-black/10 p-5">
+            <div class="lg:col-span-2 rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
                 <div class="text-sm font-semibold">{{ __('All roles') }}</div>
                 <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
                     <table class="w-full text-sm">
-                        <thead class="bg-black/20 text-xs text-zinc-400">
+                        <thead class="bg-white/60 dark:bg-black/20 text-xs text-zinc-500 dark:text-zinc-400">
                             <tr>
                                 <th class="px-4 py-3 text-left">{{ __('Name') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Key') }}</th>
@@ -26,7 +26,7 @@
                         </thead>
                         <tbody class="divide-y divide-white/10">
                             @foreach ($roles as $role)
-                                <tr class="bg-black/10">
+                                <tr class="bg-white/40 dark:bg-black/10">
                                     <td class="px-4 py-3">
                                         <div class="font-medium">{{ $role->name }}</div>
                                         <div class="text-xs text-zinc-500">
@@ -37,9 +37,9 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-zinc-300">{{ $role->slug }}</td>
-                                    <td class="px-4 py-3 text-zinc-300">{{ $role->permissions_count }}</td>
-                                    <td class="px-4 py-3 text-zinc-300">{{ $role->users_count }}</td>
+                                    <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->slug }}</td>
+                                    <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->permissions_count }}</td>
+                                    <td class="px-4 py-3 text-zinc-800 dark:text-zinc-300">{{ $role->users_count }}</td>
                                     <td class="px-4 py-3 text-right">
                                         <a href="{{ route('admin.roles.edit', $role) }}"
                                            class="rounded-xl px-3 py-1.5 text-xs border border-white/10 bg-white/5 hover:bg-white/10 transition">
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div class="rounded-3xl border border-white/10 bg-black/10 p-5">
+            <div class="rounded-3xl border border-white/10 bg-white/40 dark:bg-black/10 p-5">
                 <div class="text-sm font-semibold">{{ __('Add role') }}</div>
                 <form method="post" action="{{ route('admin.roles.store') }}" class="mt-4 space-y-3">
                     @csrf
@@ -84,4 +84,3 @@
         </div>
     </div>
 </x-layouts.app>
-
