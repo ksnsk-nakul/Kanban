@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -31,5 +32,11 @@ class AssistantTask extends Model
     {
         return $this->belongsTo(User::class);
     }
-}
 
+    public function scopeForUser(Builder $query, User|int $userId): Builder
+    {
+        $id = $userId instanceof User ? (int) $userId->getKey() : (int) $userId;
+
+        return $query->where('user_id', $id);
+    }
+}

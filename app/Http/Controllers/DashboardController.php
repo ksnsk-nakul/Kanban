@@ -16,7 +16,7 @@ final class DashboardController extends Controller
         $today = CarbonImmutable::today();
 
         $tasksQuery = AssistantTask::query()
-            ->where('user_id', $user->getKey())
+            ->forUser($user)
             ->whereDate('created_at', $today);
 
         $total = (clone $tasksQuery)->count();
@@ -25,7 +25,7 @@ final class DashboardController extends Controller
         $percent = $total === 0 ? 0 : (int) round(($completed / $total) * 100);
 
         $tasks = AssistantTask::query()
-            ->where('user_id', $user->getKey())
+            ->forUser($user)
             ->orderByRaw('completed_at is not null')
             ->orderBy('sort_order')
             ->latest('id')

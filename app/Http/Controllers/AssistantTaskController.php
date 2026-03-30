@@ -29,12 +29,9 @@ final class AssistantTaskController extends Controller
 
     public function toggleComplete(Request $request, AssistantTask $task): RedirectResponse
     {
-        abort_unless($task->user_id === $request->user()->getKey(), 403);
-
         $task->completed_at = $task->completed_at ? null : CarbonImmutable::now();
         $task->save();
 
         return back();
     }
 }
-
