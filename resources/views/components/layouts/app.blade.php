@@ -12,6 +12,17 @@
     $themeMode = auth()->user()?->theme_mode ?? session('theme_mode', 'dark');
     $isDark = $themeMode === 'dark';
     $user = auth()->user();
+
+    $activeLanguages = [];
+    try {
+        $activeLanguages = \App\Models\Language::query()
+            ->where('active', true)
+            ->orderByDesc('is_default')
+            ->orderBy('name')
+            ->get();
+    } catch (\Throwable $e) {
+        $activeLanguages = [];
+    }
 @endphp
 
 <!doctype html>
@@ -144,7 +155,7 @@
                                     <select name="locale" class="rounded-2xl bg-white/60 dark:bg-black/30 border border-black/10 dark:border-white/10 px-3 py-2 text-sm"
                                             onchange="this.form.submit()">
                                         @php($current = app()->getLocale())
-                                        @foreach (\App\Models\Language::query()->where('active', true)->orderByDesc('is_default')->orderBy('name')->get() as $language)
+                                        @foreach ($activeLanguages as $language)
                                             <option value="{{ $language->code }}" @selected($current === $language->code)>
                                                 {{ strtoupper($language->code) }}
                                             </option>
