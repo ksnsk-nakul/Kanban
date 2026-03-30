@@ -9,7 +9,7 @@
         $dir = 'ltr';
     }
 
-    $themeMode = auth()->user()?->theme_mode ?? session('theme_mode', 'light');
+    $themeMode = auth()->user()?->theme_mode ?? session('theme_mode', 'dark');
     $isDark = $themeMode === 'dark';
 @endphp
 
@@ -22,11 +22,11 @@
         <title>{{ config('devlife.app_name', config('app.name')) }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <body class="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 antialiased">
         <div class="absolute inset-0 -z-10 overflow-hidden">
-            <div class="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fuchsia-500/20 blur-3xl"></div>
-            <div class="pointer-events-none absolute top-24 left-8 h-[420px] w-[420px] rounded-full bg-sky-500/15 blur-3xl"></div>
-            <div class="pointer-events-none absolute bottom-0 right-8 h-[460px] w-[460px] rounded-full bg-emerald-500/10 blur-3xl"></div>
+            <div class="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-fuchsia-500/20 dark:bg-fuchsia-500/20 blur-3xl"></div>
+            <div class="pointer-events-none absolute top-24 left-8 h-[420px] w-[420px] rounded-full bg-sky-500/15 dark:bg-sky-500/15 blur-3xl"></div>
+            <div class="pointer-events-none absolute bottom-0 right-8 h-[460px] w-[460px] rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 blur-3xl"></div>
         </div>
 
         <div class="mx-auto max-w-7xl px-4 py-6">
