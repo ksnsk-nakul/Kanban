@@ -18,17 +18,19 @@
                     @endif
 
                     <div class="mt-4 grid gap-3 md:grid-cols-2">
-                        @foreach ($group->settings as $setting)
-                            @php
-                                $fullKey = $group->key . '.' . $setting->key;
-                                $def = $definitions[$fullKey] ?? [];
-                                $input = $def['input'] ?? null;
-                                $label = $def['label'] ?? $fullKey;
-                                $hint = $def['hint'] ?? null;
-                                $placeholder = $def['placeholder'] ?? null;
-                                $options = $def['options'] ?? [];
-                                $accept = $def['accept'] ?? null;
-                            @endphp
+	                        @foreach ($group->settings as $setting)
+	                            @php
+	                                $fullKey = $group->key . '.' . $setting->key;
+	                                $def = $definitions[$fullKey] ?? [];
+	                                $input = $def['input'] ?? null;
+	                                $label = $def['label'] ?? $fullKey;
+	                                $hint = $def['hint'] ?? null;
+	                                $placeholder = $def['placeholder'] ?? null;
+	                                $options = $def['options'] ?? [];
+	                                $accept = $def['accept'] ?? null;
+                                    $path = null;
+                                    $url = null;
+	                            @endphp
                             <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
                                 <div class="text-xs text-zinc-500">{{ __($label) }}</div>
                                 <div class="mt-1 text-[11px] text-zinc-500">{{ $fullKey }}</div>
